@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include <unistd.h>
 
 #include "Grid.h"
 #include "Node.h"
+
+#define PI_2 3.14159 / 2
 
 void initialize_grid() {
         const char* name_file = "files/input.txt";
@@ -48,19 +51,15 @@ int main(int argc, char const *argv[]) {
                 if (open_size != 0) remove_node(open, current, &open_size);
                 push_node(closed, current, &closed_size);
 
-                Node neighbors[8]; // 8 directions
+                Node neighbors[4]; // 4 directions
                 int neighbors_size = 0;
 
-                for (int y = -1; y <= 1; ++y) {
-                        for (int x = -1; x <= 1; ++x) {
-                                if (x == 0 && y == 0) continue;
+                for (unsigned int i = 0; i < 4; ++i) {
+                        int checkX = current.x + round(-1 * cos(PI_2 * i));
+                        int checkY = current.y + round(-1 * sin(PI_2 * i));
 
-                                int checkX = current.x + x;
-                                int checkY = current.y + y;
-
-                                if (checkX >= 0 && checkX < grid.width && checkY >= 0 && checkY < grid.height)
-                                        push_node(neighbors, get_node(checkX, checkY), &neighbors_size);
-                        }
+                        if (checkX >= 0 && checkX < grid.width && checkY >= 0 && checkY < grid.height)
+                                push_node(neighbors, get_node(checkX, checkY), &neighbors_size);
                 }
 
                 for (int i = 0; i < neighbors_size; ++i) {

@@ -20,11 +20,12 @@ void push_node(Node arr[], Node node, int* length) {
 }
 
 void remove_node(Node arr[], Node node, int* length) {
-        int index = 0;
+        int index = -1;
         for (int i = 0; i < (*length); ++i)
                 if (compare_equal(&arr[i], &node))
                         index = i;
-
+        if (index == -1)
+                return;
         clear_node(&arr[index]);
         for(int i = index; i < (*length) - 1; ++i)
                 arr[i] = arr[i + 1];
