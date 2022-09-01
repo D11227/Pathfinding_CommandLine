@@ -13,7 +13,7 @@ void clear_node(Node* node) {
         node->parentY = -1;
 }
 
-Node create_node(int x, int y, bool isWall) {
+Node create_node(unsigned int x, unsigned int y, bool isWall) {
         Node node;
         clear_node(&node);
         node.x = x;

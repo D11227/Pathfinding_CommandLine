@@ -6,13 +6,13 @@
 
 typedef struct Grid {
         struct Node *values;
-        int width;
-        int height;
+        unsigned int width;
+        unsigned int height;
 } Grid;
 
 Grid grid;
 
-Node get_node(int x, int y);
+Node get_node(unsigned int x, unsigned int y);
 void get_size_grid(FILE* file);
 void read_file_grid(FILE *file);
 void write_file_grid(char output[]);

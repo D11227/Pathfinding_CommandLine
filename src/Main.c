@@ -23,16 +23,16 @@ void initialize_grid() {
 int main(int argc, char const *argv[]) {
         initialize_grid();
 
-        Node open[grid.width * grid.height];
-        Node closed[grid.width * grid.height];
-        Node path[grid.width * grid.height];
+        Node *open = calloc(grid.width * grid.height, sizeof(Node));
+        Node *closed = calloc(grid.width * grid.height, sizeof(Node));
+        Node *path = calloc(grid.width * grid.height, sizeof(Node));
 
-        int open_size = 0, closed_size = 0, path_size = 0;
+        unsigned int open_size = 0, closed_size = 0, path_size = 0;
         bool startFinding = true;
 
         while (open_size > 0 || startFinding) {
                 Node current = open[0];
-                for (int i = 1; i < open_size; ++i)
+                for (unsigned int i = 1; i < open_size; ++i)
                         if (open[i].f < current.f)
                                 current = open[i];
 
@@ -52,7 +52,7 @@ int main(int argc, char const *argv[]) {
                 push_node(closed, current, &closed_size);
 
                 Node neighbors[4]; // 4 directions
-                int neighbors_size = 0;
+                unsigned int neighbors_size = 0;
 
                 for (unsigned int i = 0; i < 4; ++i) {
                         int checkX = current.x + round(-1 * cos(PI_2 * i));
@@ -62,12 +62,12 @@ int main(int argc, char const *argv[]) {
                                 push_node(neighbors, get_node(checkX, checkY), &neighbors_size);
                 }
 
-                for (int i = 0; i < neighbors_size; ++i) {
+                for (unsigned int i = 0; i < neighbors_size; ++i) {
                         Node neighbor = neighbors[i];
                         if (neighbor.isWall || find_node(closed, neighbor, &closed_size))
                                 continue;
 
-                        int newCost = current.g + heuristic(current, neighbor);
+                        unsigned int newCost = current.g + heuristic(current, neighbor);
                         if (newCost < neighbor.g || !find_node(open, neighbor, &open_size)) {
                                 neighbor.g = newCost;
                                 neighbor.h = heuristic(neighbor, target);
@@ -83,21 +83,21 @@ int main(int argc, char const *argv[]) {
 
         char output_file[grid.width * grid.height];
 
-        for (int y = 0; y < grid.height; ++y) {
-                for (int x = 0; x < grid.width; ++x) {
+        for (unsigned int y = 0; y < grid.height; ++y) {
+                for (unsigned int x = 0; x < grid.width; ++x) {
                         output_file[y * grid.width + x] = (get_node(x, y).isWall)
                                                           ? '1' : '0';
                 }
         }
 
-        for (int i = 0; i < path_size; ++i)
+        for (unsigned int i = 0; i < path_size; ++i)
                 output_file[path[i].y * grid.width + path[i].x] = '#';
 
         output_file[start.y * grid.width + start.x] = 'S';
         output_file[target.y * grid.width + target.x] = 'T';
 
-        for (int y = 0; y < grid.height; ++y) {
-                for (int x = 0; x < grid.width; ++x) {
+        for (unsigned int y = 0; y < grid.height; ++y) {
+                for (unsigned int x = 0; x < grid.width; ++x) {
                         char c = output_file[y * grid.width + x];
                         printf("%s%c\033[0m", (
                                 (c == '#')
@@ -117,6 +117,9 @@ int main(int argc, char const *argv[]) {
         write_file_grid(output_file);
 
         free_grid();
+        free(open);
+        free(closed);
+        free(path);
 
         const char string[] = "Pathfinding in C commandline, Written by SilverbossTD (Thanh Duy)\n";
         const unsigned int string_size = sizeof(string);

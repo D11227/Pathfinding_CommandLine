@@ -15,7 +15,7 @@ typedef struct Node {
 } Node;
 
 Node start, target;
-Node create_node(int x, int y, bool isWall);
+Node create_node(unsigned int x, unsigned int y, bool isWall);
 void clear_node(Node* node);
 bool compare_equal(Node* a, Node *b);
 
